@@ -1,10 +1,14 @@
+
+#Name: Anna Kaplan
+#UM ID: 23290438
+#Worked With: Madison Leidner & Lauren Snerson
+
 from xml.sax import parseString
 from bs4 import BeautifulSoup
 import re
 import os
 import csv
 import unittest
-
 
 def get_listings_from_search_results(html_file):
     """
@@ -25,7 +29,34 @@ def get_listings_from_search_results(html_file):
         ('Loft in Mission District', 210, '1944564'),  # example
     ]
     """
-    pass
+    f = open(html_file, 'r')
+    contents = f.read()
+    f.close()
+    soup = BeautifulSoup(contents, 'html.parser')
+
+    title_lst = []
+    price_lst = []
+    id_lst = []
+
+    div_tags = soup.find_all('div', class_ = 't1jojoys dir dir-ltr')
+    span_tags = soup.find_all('span', class_ = '_tyxjp1')
+
+    for tag in div_tags:
+        title = tag.text.strip()
+        title_lst.append(title)
+        id = tag.get('id').strip('title_')
+        id_lst.append(id)
+    for tag in span_tags:
+        price = tag.text.strip('$')
+        price_lst.append(int(price))
+    
+    final_lst = []
+    i = 0
+    while i < len(title_lst):
+        final_lst.append((title_lst[i], price_lst[i], id_lst[i]))
+        i += 1
+        
+    return final_lst
 
 
 def get_listing_information(listing_id):
@@ -135,7 +166,7 @@ def extra_credit(listing_id):
     """
     pass
 
-
+"""
 class TestCases(unittest.TestCase):
 
     def test_get_listings_from_search_results(self):
@@ -236,8 +267,8 @@ class TestCases(unittest.TestCase):
 
         # check that the first element in the list is '16204265'
         pass
-
-
+"""
+get_listings_from_search_results('html_files/mission_district_search_results.html')
 if __name__ == '__main__':
     database = get_detailed_listing_database("html_files/mission_district_search_results.html")
     write_csv(database, "airbnb_dataset.csv")
