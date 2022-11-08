@@ -134,7 +134,7 @@ def get_detailed_listing_database(html_file):
         function_two = get_listing_information(value[2])
         detailed_result.append((value[0], value[1], value[2], function_two[0], function_two[1], function_two[2]))
     
-    print(detailed_result)
+    return detailed_result
 
 
 def write_csv(data, filename):
@@ -159,7 +159,12 @@ def write_csv(data, filename):
 
     This function should not return anything.
     """
-    pass
+    f = open(filename, 'w')
+    header = 'Listing Title, Cost, Listing ID, Policy Number, Place Type, Number of Bedrooms \n'
+    f.write(header)
+    writer = csv.writer(f)
+    sorted_data = sorted(data, key = lambda x: x[1])
+    writer.writerows(sorted_data)
 
 
 def check_policy_numbers(data):
@@ -304,7 +309,9 @@ class TestCases(unittest.TestCase):
 """
 #get_listings_from_search_results('html_files/mission_district_search_results.html')
 #get_listing_information('1944564')
-get_detailed_listing_database('html_files/mission_district_search_results.html')
+detailed = get_detailed_listing_database('html_files/mission_district_search_results.html')
+write_csv(detailed, "test.csv")
+
 if __name__ == '__main__':
     database = get_detailed_listing_database("html_files/mission_district_search_results.html")
     write_csv(database, "airbnb_dataset.csv")
