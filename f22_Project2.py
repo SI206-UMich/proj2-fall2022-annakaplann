@@ -96,6 +96,10 @@ def get_listing_information(listing_id):
         if "Policy number" in tag.text.strip():
             find_number = tag.find('span', class_ = 'll4r2nl dir dir-ltr')
             policy_number = find_number.text.strip()
+            if "pending" in policy_number.lower():
+                policy_number = "Pending"
+            elif "not" in policy_number.lower():
+                policy_number = "Exempt"
     for tag in div_tags:
         find_place = tag.find('h2', class_ = '_14i3z6h')
         if "private" in find_place.text.strip():
@@ -186,7 +190,16 @@ def check_policy_numbers(data):
     ]
 
     """
-    pass
+    pattern1 = '20[\d]{2}-00[\d]{4}STR'
+    pattern2 = 'STR-000[\d]{4}'
+    final_lst = []
+    for item in data:
+        if item[3] != "Pending" and item[3] != "Exempt":
+            lst1 = re.findall(pattern1, item[3])
+            lst2 = re.findall(pattern2, item[3])
+            if len(lst1) + len(lst2) == 0:
+                final_lst.append(item[3])
+    return final_lst
 
 
 def extra_credit(listing_id):
@@ -307,10 +320,6 @@ class TestCases(unittest.TestCase):
         # check that the first element in the list is '16204265'
         pass
 """
-#get_listings_from_search_results('html_files/mission_district_search_results.html')
-#get_listing_information('1944564')
-detailed = get_detailed_listing_database('html_files/mission_district_search_results.html')
-write_csv(detailed, "test.csv")
 
 if __name__ == '__main__':
     database = get_detailed_listing_database("html_files/mission_district_search_results.html")
