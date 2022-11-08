@@ -111,7 +111,7 @@ def get_listing_information(listing_id):
             if "bedroom" in tag.text.strip():
                 num_bedrooms = re.sub('\D', "", tag.text.strip())
     
-    print((policy_number, place_type, int(num_bedrooms)))
+    return (policy_number, place_type, int(num_bedrooms))
 
 
 def get_detailed_listing_database(html_file):
@@ -128,7 +128,13 @@ def get_detailed_listing_database(html_file):
         ...
     ]
     """
-    pass
+    detailed_result = []
+    function_one = get_listings_from_search_results(html_file)
+    for value in function_one:
+        function_two = get_listing_information(value[2])
+        detailed_result.append((value[0], value[1], value[2], function_two[0], function_two[1], function_two[2]))
+    
+    print(detailed_result)
 
 
 def write_csv(data, filename):
@@ -297,7 +303,8 @@ class TestCases(unittest.TestCase):
         pass
 """
 #get_listings_from_search_results('html_files/mission_district_search_results.html')
-get_listing_information('1944564')
+#get_listing_information('1944564')
+get_detailed_listing_database('html_files/mission_district_search_results.html')
 if __name__ == '__main__':
     database = get_detailed_listing_database("html_files/mission_district_search_results.html")
     write_csv(database, "airbnb_dataset.csv")
