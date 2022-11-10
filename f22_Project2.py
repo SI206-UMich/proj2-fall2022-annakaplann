@@ -1,4 +1,3 @@
-
 #Name: Anna Kaplan
 #UM ID: 23290438
 #Worked With: Madison Leidner & Lauren Snerson
@@ -164,7 +163,7 @@ def write_csv(data, filename):
     This function should not return anything.
     """
     f = open(filename, 'w')
-    header = 'Listing Title, Cost, Listing ID, Policy Number, Place Type, Number of Bedrooms \n'
+    header = 'Listing Title,Cost,Listing ID,Policy Number,Place Type,Number of Bedrooms \n'
     f.write(header)
     writer = csv.writer(f)
     sorted_data = sorted(data, key = lambda x: x[1])
@@ -322,7 +321,7 @@ class TestCases(unittest.TestCase):
         # check that there are 21 lines in the csv
         self.assertEqual(len(csv_lines), 21)
         # check that the header row is correct
-        self.assertEqual(csv_lines[0], ['Listing Title', ' Cost', ' Listing ID', ' Policy Number', ' Place Type', ' Number of Bedrooms '])
+        self.assertEqual(csv_lines[0], ['Listing Title', 'Cost', 'Listing ID', 'Policy Number', 'Place Type', 'Number of Bedrooms '])
         # check that the next row is Private room in Mission District,82,51027324,Pending,Private Room,1
         self.assertEqual(csv_lines[1],['Private room in Mission District', '82', '51027324', 'Pending', 'Private Room', '1'])
         # check that the last row is Apartment in Mission District,399,28668414,Pending,Entire Room,2
@@ -348,5 +347,4 @@ if __name__ == '__main__':
     database = get_detailed_listing_database("html_files/mission_district_search_results.html")
     write_csv(database, "airbnb_dataset.csv")
     check_policy_numbers(database)
-    extra_credit('1944564')
     unittest.main(verbosity=2)
