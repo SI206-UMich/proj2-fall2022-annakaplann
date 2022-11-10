@@ -169,6 +169,7 @@ def write_csv(data, filename):
     writer = csv.writer(f)
     sorted_data = sorted(data, key = lambda x: x[1])
     writer.writerows(sorted_data)
+    f.close()
 
 
 def check_policy_numbers(data):
@@ -216,7 +217,22 @@ def extra_credit(listing_id):
     gone over their 90 day limit, else return True, indicating the lister has
     never gone over their limit.
     """
-    pass
+    f = open('html_files/listing_'+listing_id+'_reviews.html', 'r')
+    contents = f.read()
+    f.close()
+    soup = BeautifulSoup(contents, 'html.parser')
+    li_tags = soup.find_all('li', class_ = '_1f1oir5')
+    review_dict = {}
+    year_pattern = '.* (\d\d\d\d)'
+    for tag in li_tags:
+        date = tag.text.strip()
+        year = re.findall(year_pattern, date)
+        for yr in year:
+            review_dict[yr] = review_dict.get(yr, 0) + 1
+    for year in review_dict:
+        if review_dict[year] > 90:
+            return False
+    return True
 
 
 class TestCases(unittest.TestCase):
@@ -332,4 +348,5 @@ if __name__ == '__main__':
     database = get_detailed_listing_database("html_files/mission_district_search_results.html")
     write_csv(database, "airbnb_dataset.csv")
     check_policy_numbers(database)
+    extra_credit('1944564')
     unittest.main(verbosity=2)
